@@ -1,11 +1,24 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, Search } from "lucide-react";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check login status
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsLoggedIn(!!token);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    window.location.href = "/login";
+  };
 
   return (
     <nav className="w-full border-b border-gray-200 bg-gray-50 sticky top-0 z-50">
@@ -31,23 +44,45 @@ export default function Navbar() {
           <Link href="/courses" className="text-gray-700 hover:text-gray-900">
             Courses
           </Link>
+
           <Link href="/about" className="text-gray-700 hover:text-gray-900">
             About
           </Link>
 
-          <Link
-            href="/login"
-            className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
-          >
-            Login
-          </Link>
+          {/* If Logged In */}
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="text-gray-700 hover:text-gray-900"
+              >
+                Dashboard
+              </Link>
 
-          <Link
-            href="/register"
-            className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-800 transition"
-          >
-            Sign Up
-          </Link>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-100 transition"
+              >
+                Login
+              </Link>
+
+              <Link
+                href="/register"
+                className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm hover:bg-gray-800 transition"
+              >
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Icon */}
@@ -99,21 +134,46 @@ export default function Navbar() {
               About
             </Link>
 
-            <Link
-              href="/login"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-sm hover:bg-gray-100"
-              onClick={() => setOpen(false)}
-            >
-              Login
-            </Link>
+            {/* Mobile Logged In / Logged Out Buttons */}
+            {isLoggedIn ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-gray-700 hover:text-gray-900"
+                  onClick={() => setOpen(false)}
+                >
+                  Dashboard
+                </Link>
 
-            <Link
-              href="/register"
-              className="w-full px-4 py-2 bg-gray-900 text-white text-center rounded-lg text-sm hover:bg-gray-800"
-              onClick={() => setOpen(false)}
-            >
-              Sign Up
-            </Link>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setOpen(false);
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-100"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg text-center text-sm hover:bg-gray-100"
+                  onClick={() => setOpen(false)}
+                >
+                  Login
+                </Link>
+
+                <Link
+                  href="/register"
+                  className="w-full px-4 py-2 bg-gray-900 text-white text-center rounded-lg text-sm hover:bg-gray-800"
+                  onClick={() => setOpen(false)}
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}
