@@ -29,7 +29,7 @@ export default function AuthForm({ type }: Props) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${isSignup ? "register" : "login"}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${isSignup ? "/auth/register" : "/auth/login"}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
